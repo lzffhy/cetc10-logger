@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cetc10.module.logger.config.LoggerConfiguration, cetc10.module.logger.config.AspectjConfiguration

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF">
+<properties>
+    <!-- 可配置为tomcat/logs/kettle/的绝对路径 -->
+    <property name="LOG_HOME">log/sys/</property>
+    <!--<property name="LOG_HOME">${sys:LOG_PATH}</property>-->
+    <!-- 文件输出格式 -->
+    <property name="PATTERN">%d{yyyy.MM.dd HH:mm:ss}+%5level+%msg%n</property>
+</properties>
+<Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+        <PatternLayout pattern="${PATTERN}" />
+        <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+    </Console>
+
+    <RollingRandomAccessFile name="logFile"
+                             fileName="${LOG_HOME}/sys.log"
+                             filePattern="${LOG_HOME}/%d{yyyy-MM-dd}-%i.log">
+        <Filters>
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMisMatch="DENY"/>
+        </Filters>
+        <!--<PatternLayout pattern="${PATTERN}" />-->
+        <Policies>
+            <!-- 归档每天的文件 -->
+            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            <!-- 限制单个文件大小 -->
+            <SizeBasedTriggeringPolicy size="100 MB" />
+            <!-- 限制每天文件个数 -->
+        </Policies>
+        <!-- 保存15天的文件 -->
+        <DefaultRolloverStrategy compressionLevel="0" max="10">
+            <Delete basePath="${LOG_HOME}" maxDepth="2">
+                <IfFileName glob="*.log" />
+                <IfLastModified age="15d" />
+            </Delete>
+        </DefaultRolloverStrategy>
+    </RollingRandomAccessFile>
+
+</Appenders>
+
+<Loggers>
+    <Root level="DEBUG">
+        <AppenderRef ref="Console" />
+        <AppenderRef ref="logFile" />
+  <!--      <AppenderRef ref="InfoFile" />
+        <AppenderRef ref="ErrorFile" />-->
+        <!--<AppenderRef ref="FatalFile" />-->
+    </Root>
+
+    <logger name="org.springframework.core" level="info"/>
+    <logger name="org.springframework.beans" level="info"/>
+    <logger name="org.springframework.context" level="info"/>
+    <logger name="org.springframework.web" level="info"/>
+    <logger name="org.jboss.netty" level="info"/>
+    <logger name="org.apache.http" level="info"/>
+</Loggers>
+</Configuration>

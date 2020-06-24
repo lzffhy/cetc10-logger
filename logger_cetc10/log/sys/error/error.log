@@ -1,0 +1,4 @@
+2020.06.23 16:54:07+ERROR+【2020-06-23 04:54:07】 【测试系统】 【test】 【169.254.120.12】 【ERROR】 【cetc10.module.logger.common.LogLevel】 【main】 【16】 【hello hello】
+2020.06.23 16:54:07+ WARN+【2020-06-23 04:54:07】 【测试系统】 【test】 【169.254.120.12】 【WARN】 【cetc10.module.logger.common.LogLevel】 【main】 【17】 【hello hello】
+2020.06.23 17:04:57+ERROR+【2020-06-23 05:04:57】 【测试系统】 【test】 【169.254.120.12】 【ERROR】 【cetc10.module.logger.common.LogLevel】 【main】 【16】 hello hello
+2020.06.23 17:04:57+ WARN+【2020-06-23 05:04:57】 【测试系统】 【test】 【169.254.120.12】 【WARN】 【cetc10.module.logger.common.LogLevel】 【main】 【17】 hello hello
