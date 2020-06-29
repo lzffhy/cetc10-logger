@@ -57,10 +57,10 @@ public class SysLogDebugAspect {
             String logLevel = LogLevel.DEBUG;
             String packageClassName = proceedingJoinPoint.getSignature().getDeclaringTypeName();
             String methodName =  proceedingJoinPoint.getSignature().getName();
-            SourceLocation logcation = proceedingJoinPoint.getSourceLocation();
-            MethodInvocationProceedingJoinPoint joinPoint = (MethodInvocationProceedingJoinPoint)proceedingJoinPoint;
-            logcation = joinPoint.getSourceLocation();
-            int s = logcation.getLine();
+//            SourceLocation logcation = proceedingJoinPoint.getSourceLocation();
+//            MethodInvocationProceedingJoinPoint joinPoint = (MethodInvocationProceedingJoinPoint)proceedingJoinPoint;
+//            logcation = joinPoint.getSourceLocation();
+//            int s = logcation.getLine();
             //int lineNum = proceedingJoinPoint.getSourceLocation().getLine();
             int lineNum = CommonUtil.getRuntimeInfo().getIntValue("lineNum");
             String msg = getAspectLogDescription(proceedingJoinPoint);
