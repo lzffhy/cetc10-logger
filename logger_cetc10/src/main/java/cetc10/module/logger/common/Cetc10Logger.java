@@ -2,6 +2,8 @@ package cetc10.module.logger.common;
 
 import cetc10.module.logger.common.utils.CommonUtil;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +18,10 @@ public class Cetc10Logger {
 
     private Logger logger;
 
+    private org.apache.logging.log4j.Logger loggerj;
+
+    private final Level OP = Level.forName("OP", 150);
+
     public static LoggerConfigProperties loggerConfigProperties;
 
     static {
@@ -26,7 +32,7 @@ public class Cetc10Logger {
 
     public Cetc10Logger() {}
 
-    public void init(Boolean isDebugOn, String sysName, String softwareId) throws Exception {
+    public void init(Boolean isDebugOn, String sysName, String softwareId) {
         loggerConfigProperties.setDebugOn(isDebugOn);
         loggerConfigProperties.setSysName(sysName);
         loggerConfigProperties.setSoftwareId(softwareId);
@@ -35,10 +41,7 @@ public class Cetc10Logger {
     public Cetc10Logger(Class clazz) {
         this.clazz = clazz;
         logger = LoggerFactory.getLogger(clazz);
-    }
-
-    public LoggerConfigProperties getLoggerConfigProperties() {
-        return loggerConfigProperties;
+        loggerj = LogManager.getLogger(clazz.getName());
     }
 
     public void sysDebug(String msg) {
@@ -57,21 +60,12 @@ public class Cetc10Logger {
         logger.error(getLogMsg(LogLevel.ERROR, msg));
     }
 
-    public void setClazz(Class clazz) {
-        this.logger = LoggerFactory.getLogger(clazz);
-        this.clazz = clazz;
+    public void opLog(String userId, String opType, String opData) {
+        loggerj.log(OP, getOpLogMsg(userId, opType, opData));
     }
 
-    public Class getClazz() {
-        return clazz;
-    }
-
-    public void opDebug(String userId, String opType, String opData) {
-        logger.debug(getOpLogMsg(userId, opType, opData));
-    }
-
-    public void opInfo(String userId, String opType, String opData) {
-        logger.info(getOpLogMsg(userId, opType, opData));
+    public LoggerConfigProperties getLoggerConfigProperties() {
+        return loggerConfigProperties;
     }
 
     public String getOpLogMsg(String userId, String opType, String opData) {
@@ -80,6 +74,7 @@ public class Cetc10Logger {
                 .sysName(loggerConfigProperties.getSysName())
                 .softwareId(loggerConfigProperties.getSoftwareId())
                 .localIp(CommonUtil.getLocalHostIp())
+                .logLevel(LogLevel.OP)
                 .userId(userId)
                 .opType(opType)
                 .opData(opData)

@@ -1,8 +1,6 @@
 package cetc10.module.logger.config;
 
-import cetc10.module.logger.aop.SysLogDebugAspect;
 import cetc10.module.logger.common.Cetc10Logger;
-import cetc10.module.logger.common.Cetc10LoggerFactory;
 import cetc10.module.logger.common.LoggerConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

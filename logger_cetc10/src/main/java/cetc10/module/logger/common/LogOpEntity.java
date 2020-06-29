@@ -18,6 +18,7 @@ public class LogOpEntity {
     private String sysName;//系统名称
     private String softwareId;//软件标识
     private String localIp;//本机ip
+    private String logLevel;
     private String userId;
     private String opType;
     private String opData;

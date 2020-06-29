@@ -2,11 +2,16 @@
 <Configuration status="OFF">
 <properties>
     <!-- 可配置为tomcat/logs/kettle/的绝对路径 -->
-    <property name="LOG_HOME">log/sys/</property>
-    <!--<property name="LOG_HOME">${sys:LOG_PATH}</property>-->
+    <property name="SYS_HOME">log/sys/</property>
+    <property name="OP_HOME">log/op/</property>
+    <!--<property name="SYS_HOME">${sys:LOG_PATH}</property>-->
     <!-- 文件输出格式 -->
     <property name="PATTERN">%d{yyyy.MM.dd HH:mm:ss}+%5level+%msg%n</property>
 </properties>
+<!-- 自定义日志级别 -->
+<CustomLevels>
+    <CustomLevel name="OP" intLevel="150" />
+</CustomLevels>
 <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
         <PatternLayout pattern="${PATTERN}" />
@@ -14,9 +19,10 @@
     </Console>
 
     <RollingRandomAccessFile name="logFile"
-                             fileName="${LOG_HOME}/sys.log"
-                             filePattern="${LOG_HOME}/%d{yyyy-MM-dd}-%i.log">
+                             fileName="${SYS_HOME}/sys.log"
+                             filePattern="${SYS_HOME}/sys-%d{yyyy-MM-dd}-%i.log">
         <Filters>
+            <ThresholdFilter level="op"  onMatch="DENY"   onMismatch="NEUTRAL"/>
             <ThresholdFilter level="debug" onMatch="ACCEPT" onMisMatch="DENY"/>
         </Filters>
         <!--<PatternLayout pattern="${PATTERN}" />-->
@@ -28,24 +34,49 @@
             <!-- 限制每天文件个数 -->
         </Policies>
         <!-- 保存15天的文件 -->
-        <DefaultRolloverStrategy compressionLevel="0" max="10">
-            <Delete basePath="${LOG_HOME}" maxDepth="2">
+        <DefaultRolloverStrategy compressionLevel="0" max="15">
+            <Delete basePath="${SYS_HOME}" maxDepth="2">
                 <IfFileName glob="*.log" />
                 <IfLastModified age="15d" />
             </Delete>
         </DefaultRolloverStrategy>
     </RollingRandomAccessFile>
 
+    <RollingRandomAccessFile name="opFile"
+                             fileName="${OP_HOME}/op.log"
+                             filePattern="${OP_HOME}/op-%d{yyyy-MM-dd}-%i.log">
+        <Filters>
+            <ThresholdFilter level="op" onMatch="ACCEPT" onMisMatch="DENY"/>
+        </Filters>
+        <!--<PatternLayout pattern="${PATTERN}" />-->
+        <Policies>
+            <!-- 归档每天的文件 -->
+            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            <!-- 限制单个文件大小 -->
+            <SizeBasedTriggeringPolicy size="100 MB" />
+            <!-- 限制每天文件个数 -->
+        </Policies>
+        <!-- 保存15天的文件 -->
+        <DefaultRolloverStrategy compressionLevel="0" max="15">
+            <Delete basePath="${OP_HOME}" maxDepth="2">
+                <IfFileName glob="*.log" />
+                <IfLastModified age="15d" />
+            </Delete>
+        </DefaultRolloverStrategy>
+
+
+    </RollingRandomAccessFile>
 </Appenders>
 
 <Loggers>
-    <Root level="DEBUG">
+    <Root level="DEBUG" includeLocation="true">
         <AppenderRef ref="Console" />
         <AppenderRef ref="logFile" />
-  <!--      <AppenderRef ref="InfoFile" />
-        <AppenderRef ref="ErrorFile" />-->
-        <!--<AppenderRef ref="FatalFile" />-->
+        <AppenderRef ref="opFile" />
     </Root>
+ <!--   <AsyncLogger name="cetc10.module.logger.aop.SysLogDebugAspect" level="debug" includeLocation="true">
+        <AppenderRef ref="RollingRandomAccessFile"/>
+    </AsyncLogger>-->
 
     <logger name="org.springframework.core" level="info"/>
     <logger name="org.springframework.beans" level="info"/>

@@ -13,12 +13,14 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.reflect.SourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,7 +57,10 @@ public class SysLogDebugAspect {
             String logLevel = LogLevel.DEBUG;
             String packageClassName = proceedingJoinPoint.getSignature().getDeclaringTypeName();
             String methodName =  proceedingJoinPoint.getSignature().getName();
-            //SourceLocation logcation = proceedingJoinPoint.getSourceLocation();
+            SourceLocation logcation = proceedingJoinPoint.getSourceLocation();
+            MethodInvocationProceedingJoinPoint joinPoint = (MethodInvocationProceedingJoinPoint)proceedingJoinPoint;
+            logcation = joinPoint.getSourceLocation();
+            int s = logcation.getLine();
             //int lineNum = proceedingJoinPoint.getSourceLocation().getLine();
             int lineNum = CommonUtil.getRuntimeInfo().getIntValue("lineNum");
             String msg = getAspectLogDescription(proceedingJoinPoint);
@@ -78,7 +83,7 @@ public class SysLogDebugAspect {
     public void doAfter() throws Throwable {
         if (Cetc10Logger.loggerConfigProperties.isDebugOn()) {
             String msg = this.logEntity.formatLog();
-            logger.info(msg);
+            //logger.info(msg);
             logger.debug(msg);
             //释放该对象
             this.logEntity = null;
