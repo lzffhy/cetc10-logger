@@ -1,4 +1,4 @@
-package cetc10.module.logger.common;
+package cetc10.module.common;
 
 import java.util.HashMap;
 import java.util.Map;
