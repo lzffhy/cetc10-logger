@@ -1,23 +1,34 @@
-package cetc10.module.logger.common.utils;
+package cetc10.module.common.utils;
 
-import cetc10.module.logger.common.LogLevel;
+import cetc10.module.common.LogLevel;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class CommonUtil {
 
-    public static JSONObject getRuntimeInfo()
-    {
+    public static JSONObject getRuntimeInfo(String className, String methodName) {
         StackTraceElement stack[] = (new Throwable()).getStackTrace();
         JSONObject json = new JSONObject();
-        StackTraceElement element = stack[stack.length - 1];
-        json.put("className", element.getClassName());
-        json.put("methodName", element.getMethodName());
-        json.put("lineNum", element.getLineNumber());
+        if (StringUtils.isNotBlank(className) && StringUtils.isNotBlank(methodName)) {
+            for (StackTraceElement element : stack) {
+                if (element.getClassName().contains(className) && element.getMethodName().equals(methodName)) {
+                   json.put("lineNum", element.getLineNumber());
+                }
+            }
+        } else if (StringUtils.isNotBlank(className)) {
+            for (StackTraceElement element : stack) {
+                if (element.getClassName().contains(className)) {
+                    json.put("className", element.getClassName());
+                    json.put("methodName", element.getMethodName());
+                    json.put("lineNum", element.getLineNumber());
+                    return json;
+                }
+            }
+        }
         return json;
     }
 

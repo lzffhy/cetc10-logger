@@ -1,6 +1,6 @@
-package cetc10.module.logger.common;
+package cetc10.module.common;
 
-import cetc10.module.logger.common.utils.CommonUtil;
+import cetc10.module.common.utils.CommonUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -60,15 +60,11 @@ public class Cetc10Logger {
         logger.error(getLogMsg(LogLevel.ERROR, msg));
     }
 
-    public void opLog(String userId, String opType, String opData) {
+    public void op(String userId, String opType, String opData) {
         loggerj.log(OP, getOpLogMsg(userId, opType, opData));
     }
 
-    public LoggerConfigProperties getLoggerConfigProperties() {
-        return loggerConfigProperties;
-    }
-
-    public String getOpLogMsg(String userId, String opType, String opData) {
+    private String getOpLogMsg(String userId, String opType, String opData) {
         return LogOpEntity.builder()
                 .logTime(FORMAT.format(new Date()))
                 .sysName(loggerConfigProperties.getSysName())
@@ -81,8 +77,8 @@ public class Cetc10Logger {
                 .build().formatLog();
     }
 
-    public String getLogMsg(String level, String msg) {
-        JSONObject runtime = CommonUtil.getRuntimeInfo();
+    private String getLogMsg(String level, String msg) {
+        JSONObject runtime = CommonUtil.getRuntimeInfo(this.clazz.getName(), null);
         return LogEntity.builder()
                 .logTime(FORMAT.format(new Date()))
                 .sysName(loggerConfigProperties.getSysName())

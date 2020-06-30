@@ -1,8 +1,8 @@
-package cetc10.module.logger.config;
+package cetc10.module.config;
 
-import cetc10.module.logger.aop.SysLogDebugAspect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import cetc10.module.aop.SysLogDebugAspect;
 
 @Configuration
 public class AspectjConfiguration {

@@ -1,4 +1,4 @@
-package cetc10.module.logger.common;
+package cetc10.module.common;
 
 public final class LogLevel {
     public static final String INFO = "INFO";

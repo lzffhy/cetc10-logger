@@ -1,26 +1,21 @@
-package cetc10.module.logger.aop;
+package cetc10.module.aop;
 
-import cetc10.module.logger.annotation.SysLogDebug;
-import cetc10.module.logger.common.Cetc10Logger;
-import cetc10.module.logger.common.LogEntity;
-import cetc10.module.logger.common.LogLevel;
-import cetc10.module.logger.common.LoggerConfigProperties;
-import cetc10.module.logger.common.utils.CommonUtil;
+import cetc10.module.annotation.SysLogDebug;
+import cetc10.module.common.Cetc10Logger;
+import cetc10.module.common.LogEntity;
+import cetc10.module.common.LogLevel;
+import cetc10.module.common.utils.CommonUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.aspectj.lang.reflect.SourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,7 +31,7 @@ public class SysLogDebugAspect {
     private LogEntity logEntity = null;
 
 
-    @Pointcut("@annotation(cetc10.module.logger.annotation.SysLogDebug)")
+    @Pointcut("@annotation(cetc10.module.annotation.SysLogDebug)")
     public void webLog() {
     }
 
@@ -57,12 +52,7 @@ public class SysLogDebugAspect {
             String logLevel = LogLevel.DEBUG;
             String packageClassName = proceedingJoinPoint.getSignature().getDeclaringTypeName();
             String methodName =  proceedingJoinPoint.getSignature().getName();
-//            SourceLocation logcation = proceedingJoinPoint.getSourceLocation();
-//            MethodInvocationProceedingJoinPoint joinPoint = (MethodInvocationProceedingJoinPoint)proceedingJoinPoint;
-//            logcation = joinPoint.getSourceLocation();
-//            int s = logcation.getLine();
-            //int lineNum = proceedingJoinPoint.getSourceLocation().getLine();
-            int lineNum = CommonUtil.getRuntimeInfo().getIntValue("lineNum");
+            int lineNum = CommonUtil.getRuntimeInfo(packageClassName, methodName).getIntValue("lineNum");
             String msg = getAspectLogDescription(proceedingJoinPoint);
             logEntity = LogEntity.builder()
                     .logTime(logTime)

@@ -1,4 +1,4 @@
-package cetc10.module.logger.common;
+package cetc10.module.common;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

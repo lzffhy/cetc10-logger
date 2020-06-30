@@ -1,4 +1,4 @@
-package cetc10.module.logger.annotation;
+package cetc10.module.annotation;
 
 import java.lang.annotation.*;
 
