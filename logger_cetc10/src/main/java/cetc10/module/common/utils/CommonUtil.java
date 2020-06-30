@@ -1,6 +1,5 @@
 package cetc10.module.common.utils;
 
-import cetc10.module.common.LogLevel;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 

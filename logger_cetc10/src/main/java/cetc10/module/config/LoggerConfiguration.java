@@ -20,8 +20,9 @@ public class LoggerConfiguration {
     private LoggerConfigProperties loggerConfigProperties;
 
     @Bean
-    public void init() throws Exception {
+    public Object init() throws Exception {
         loggerConfigProperties.setDebugOn(true);
         new Cetc10Logger().init(loggerConfigProperties.isDebugOn(), loggerConfigProperties.getSysName(), loggerConfigProperties.getSoftwareId());
+        return new Object();
     }
 }
