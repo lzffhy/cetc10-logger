@@ -36,24 +36,26 @@ public class SysLogDebugAspect {
     }
 
     @Before("webLog()")
-    public void doBefore(JoinPoint joinPoint) throws Throwable {
+    public void doBefore() throws Throwable {
     }
 
     @Around("webLog()")
     public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        Object result = proceedingJoinPoint.proceed();
+        return proceedingJoinPoint.proceed();
+    }
+
+    @After("webLog()")
+    public void doAfter(JoinPoint joinPoint) throws Throwable {
         if (Cetc10Logger.loggerConfigProperties.isDebugOn()) {
-            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            HttpServletRequest request = attributes.getRequest();
             String logTime = FORMAT.format(new Date());
             String sysName = Cetc10Logger.loggerConfigProperties.getSysName();
             String softwareId = Cetc10Logger.loggerConfigProperties.getSoftwareId();
             String localIp = CommonUtil.getLocalHostIp();
             String logLevel = LogLevel.DEBUG;
-            String packageClassName = proceedingJoinPoint.getSignature().getDeclaringTypeName();
-            String methodName =  proceedingJoinPoint.getSignature().getName();
+            String packageClassName = joinPoint.getSignature().getDeclaringTypeName();
+            String methodName =  joinPoint.getSignature().getName();
             int lineNum = CommonUtil.getRuntimeInfo(packageClassName, methodName).getIntValue("lineNum");
-            String msg = getAspectLogDescription(proceedingJoinPoint);
+            String description = getAspectLogDescription(joinPoint);
             logEntity = LogEntity.builder()
                     .logTime(logTime)
                     .sysName(sysName)
@@ -63,17 +65,9 @@ public class SysLogDebugAspect {
                     .packageClassName(packageClassName)
                     .methodName(methodName)
                     .lineNum(lineNum)
-                    .msg(msg)
+                    .msg(description)
                     .build();
-        }
-        return result;
-    }
-
-    @After("webLog()")
-    public void doAfter() throws Throwable {
-        if (Cetc10Logger.loggerConfigProperties.isDebugOn()) {
-            String msg = this.logEntity.formatLog();
-            //logger.info(msg);
+            String msg = logEntity.formatLog();
             logger.debug(msg);
             //释放该对象
             this.logEntity = null;
@@ -86,7 +80,4 @@ public class SysLogDebugAspect {
         SysLogDebug webLog = method.getAnnotation(SysLogDebug.class);
         return webLog.description();
     }
-
-
-
 }
