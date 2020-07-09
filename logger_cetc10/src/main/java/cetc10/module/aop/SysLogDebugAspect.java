@@ -5,6 +5,8 @@ import cetc10.module.common.Cetc10Logger;
 import cetc10.module.common.LogEntity;
 import cetc10.module.common.LogLevel;
 import cetc10.module.common.utils.CommonUtil;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -21,7 +23,9 @@ import java.util.Date;
 @Component
 public class SysLogDebugAspect {
 
-    protected Logger logger = LoggerFactory.getLogger(SysLogDebugAspect.class);
+    //protected Logger logger = LoggerFactory.getLogger(SysLogDebugAspect.class);
+    org.apache.logging.log4j.Logger loggerJ = LogManager.getLogger(SysLogDebugAspect.class.getName());
+
 
     private final static SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
@@ -30,6 +34,7 @@ public class SysLogDebugAspect {
 
     @Pointcut("@annotation(cetc10.module.annotation.SysLogDebug)")
     public void webLog() {
+
     }
 
     @Before("webLog()")
@@ -65,7 +70,7 @@ public class SysLogDebugAspect {
                     .msg(description)
                     .build();
             String msg = logEntity.formatLog();
-            logger.debug(msg);
+            loggerJ.log(Level.DEBUG, msg);
             //释放该对象
             this.logEntity = null;
         }

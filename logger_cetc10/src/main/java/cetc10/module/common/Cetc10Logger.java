@@ -45,20 +45,52 @@ public class Cetc10Logger {
     }
 
     public void sysDebug(String msg) {
-        logger.debug(getLogMsg(LogLevel.DEBUG, msg));
+        loggerj.log(Level.DEBUG, getLogMsg(LogLevel.DEBUG, msg));
     }
 
     public void sysInfo(String msg) {
-        logger.info(getLogMsg(LogLevel.INFO, msg));
+        loggerj.log(Level.INFO, getLogMsg(LogLevel.INFO, msg));
     }
 
     public void sysWarn(String msg) {
-        logger.warn(getLogMsg(LogLevel.WARN, msg));
+        loggerj.log(Level.WARN, getLogMsg(LogLevel.WARN, msg));
     }
 
     public void sysError(String msg) {
-        logger.error(getLogMsg(LogLevel.ERROR, msg));
+        loggerj.log(Level.ERROR, getLogMsg(LogLevel.ERROR, msg));
     }
+
+    public void debug(String msg) {
+        loggerj.log(Level.DEBUG, msg);
+    }
+
+    public void info(String msg) {
+        loggerj.log(Level.INFO, msg);
+    }
+
+    public void warn(String msg) {
+        loggerj.log(Level.WARN, msg);
+    }
+
+    public void error(String msg) {
+        loggerj.log(Level.ERROR, msg);
+    }
+
+//    public void sysDebug(String msg) {
+//        logger.debug(getLogMsg(LogLevel.DEBUG, msg));
+//    }
+//
+//    public void sysInfo(String msg) {
+//        logger.info(getLogMsg(LogLevel.INFO, msg));
+//    }
+//
+//    public void sysWarn(String msg) {
+//        logger.warn(getLogMsg(LogLevel.WARN, msg));
+//    }
+//
+//    public void sysError(String msg) {
+//        logger.error(getLogMsg(LogLevel.ERROR, msg));
+//    }
 
     public void op(String userId, String opType, String opData) {
         loggerj.log(OP, getOpLogMsg(userId, opType, opData));
