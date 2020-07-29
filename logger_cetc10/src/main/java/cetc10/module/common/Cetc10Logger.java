@@ -93,10 +93,14 @@ public class Cetc10Logger {
 //    }
 
     public void op(String userId, String opType, String opData) {
-        loggerj.log(OP, getOpLogMsg(userId, opType, opData));
+        loggerj.log(OP, getOpLogMsg(userId, null, opType, opData));
     }
 
-    private String getOpLogMsg(String userId, String opType, String opData) {
+    public void op(String userId, String userName, String opType, String opData) {
+        loggerj.log(OP, getOpLogMsg(userId, userName, opType, opData));
+    }
+
+    private String getOpLogMsg(String userId, String userName, String opType, String opData) {
         return LogOpEntity.builder()
                 .logTime(FORMAT.format(new Date()))
                 .sysName(loggerConfigProperties.getSysName())
@@ -104,6 +108,7 @@ public class Cetc10Logger {
                 .localIp(CommonUtil.getLocalHostIp())
                 .logLevel(LogLevel.OP)
                 .userId(userId)
+                .userName(userName)
                 .opType(opType)
                 .opData(opData)
                 .build().formatLog();
