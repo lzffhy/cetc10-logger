@@ -4,7 +4,6 @@ import cetc10.module.common.utils.CommonUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
@@ -12,15 +11,13 @@ import java.util.Date;
 
 public class Cetc10Logger {
 
-    private final static SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    private final static SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 
     private Class clazz;
 
-    private Logger logger;
-
     private org.apache.logging.log4j.Logger loggerj;
 
-    private final Level OP = Level.forName("OP", 150);
+    private final Level OP = Level.forName("OP", 50);
 
     public static LoggerConfigProperties loggerConfigProperties;
 
@@ -32,15 +29,13 @@ public class Cetc10Logger {
 
     public Cetc10Logger() {}
 
-    public void init(Boolean isDebugOn, String sysName, String softwareId) {
-        loggerConfigProperties.setDebugOn(isDebugOn);
+    public void init(String sysName, String softwareId) {
         loggerConfigProperties.setSysName(sysName);
         loggerConfigProperties.setSoftwareId(softwareId);
     }
 
     public Cetc10Logger(Class clazz) {
         this.clazz = clazz;
-        logger = LoggerFactory.getLogger(clazz);
         loggerj = LogManager.getLogger(clazz.getName());
     }
 
@@ -60,6 +55,11 @@ public class Cetc10Logger {
         loggerj.log(Level.ERROR, getLogMsg(LogLevel.ERROR, msg));
     }
 
+    public void sysFatal(String msg) {
+        loggerj.log(Level.FATAL, getLogMsg(LogLevel.FATAL, msg));
+    }
+
+
     public void debug(String msg) {
         loggerj.log(Level.DEBUG, msg);
     }
@@ -76,37 +76,83 @@ public class Cetc10Logger {
         loggerj.log(Level.ERROR, msg);
     }
 
-//    public void sysDebug(String msg) {
-//        logger.debug(getLogMsg(LogLevel.DEBUG, msg));
-//    }
-//
-//    public void sysInfo(String msg) {
-//        logger.info(getLogMsg(LogLevel.INFO, msg));
-//    }
-//
-//    public void sysWarn(String msg) {
-//        logger.warn(getLogMsg(LogLevel.WARN, msg));
-//    }
-//
-//    public void sysError(String msg) {
-//        logger.error(getLogMsg(LogLevel.ERROR, msg));
-//    }
+    public void fatal(String msg) {
+        loggerj.log(Level.FATAL, msg);
+    }
 
-    public void op(String userId, String opType, String opData) {
-        loggerj.log(OP, getOpLogMsg(userId, null, opType, opData));
+
+    public void sysDebug(String msg, Exception e) {
+        this.sysDebug(msg);
+        e.printStackTrace();
+    }
+
+    public void sysInfo(String msg, Exception e) {
+        this.sysInfo(msg);
+        e.printStackTrace();
+    }
+
+    public void sysWarn(String msg, Exception e) {
+        this.sysWarn(msg);
+        e.printStackTrace();
+    }
+
+    public void sysError(String msg, Exception e) {
+        this.sysError(msg);
+        e.printStackTrace();
+    }
+
+    public void sysFatal(String msg, Exception e) {
+        this.sysFatal(msg);
+        e.printStackTrace();
+    }
+
+
+    public void sysDebug(String moduleName, String msg, Exception e) {
+        loggerj.log(Level.DEBUG, getLogMsg(LogLevel.DEBUG, msg, moduleName));
+        e.printStackTrace();
+    }
+
+    public void sysInfo(String moduleName, String msg, Exception e) {
+        loggerj.log(Level.INFO, getLogMsg(LogLevel.INFO, msg, moduleName));
+        e.printStackTrace();
+    }
+
+    public void sysWarn(String moduleName, String msg, Exception e) {
+        loggerj.log(Level.WARN, getLogMsg(LogLevel.WARN, msg, moduleName));
+        e.printStackTrace();
+    }
+
+    public void sysError(String moduleName, String msg, Exception e) {
+        loggerj.log(Level.ERROR, getLogMsg(LogLevel.ERROR, msg, moduleName));
+        e.printStackTrace();
+    }
+
+    public void sysFatal(String moduleName, String msg, Exception e) {
+        loggerj.log(Level.FATAL, getLogMsg(LogLevel.FATAL, msg, moduleName));
+        e.printStackTrace();
+    }
+
+
+    public void op(String userId, String opType,  String opData) {
+        loggerj.log(OP, getOpLogMsg(null, userId, null, opType, opData));
     }
 
     public void op(String userId, String userName, String opType, String opData) {
-        loggerj.log(OP, getOpLogMsg(userId, userName, opType, opData));
+        loggerj.log(OP, getOpLogMsg(null, userId, userName, opType,  opData));
     }
 
-    private String getOpLogMsg(String userId, String userName, String opType, String opData) {
+    public void op(String clientIp, String userId, String userName, String opType, String opData) {
+        loggerj.log(OP, getOpLogMsg(clientIp, userId, userName, opType,  opData));
+    }
+
+    private String getOpLogMsg(String clientIp, String userId, String userName, String opType, String opData) {
         return LogOpEntity.builder()
                 .logTime(FORMAT.format(new Date()))
                 .sysName(loggerConfigProperties.getSysName())
                 .softwareId(loggerConfigProperties.getSoftwareId())
-                .localIp(CommonUtil.getLocalHostIp())
-                .logLevel(LogLevel.OP)
+                //.localIp(CommonUtil.getLocalHostIp())
+                .clientIp(clientIp)
+                //.logLevel(LogLevel.OP)
                 .userId(userId)
                 .userName(userName)
                 .opType(opType)
@@ -114,7 +160,7 @@ public class Cetc10Logger {
                 .build().formatLog();
     }
 
-    private String getLogMsg(String level, String msg) {
+    private String getLogMsg(String level, String msg, String...moduleName) {
         JSONObject runtime = CommonUtil.getRuntimeInfo(this.clazz.getName(), null);
         return LogEntity.builder()
                 .logTime(FORMAT.format(new Date()))
@@ -125,6 +171,7 @@ public class Cetc10Logger {
                 .methodName(runtime.getString("methodName"))
                 .lineNum(runtime.getIntValue("lineNum"))
                 .logLevel(level)
+                .moduleName(moduleName.length > 0 ? moduleName[0] : null)
                 .msg(msg)
                 .build().formatLog();
     }

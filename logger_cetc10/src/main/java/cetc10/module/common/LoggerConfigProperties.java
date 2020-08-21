@@ -9,8 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "cetc10.logger")
 public class LoggerConfigProperties {
 
-    private boolean isDebugOn;
-
     private String sysName;
 
     private String softwareId;
@@ -18,17 +16,8 @@ public class LoggerConfigProperties {
     public LoggerConfigProperties() {}
 
     public LoggerConfigProperties(boolean isDebugOn, String sysName, String softwareId) {
-        this.isDebugOn = isDebugOn;
         this.sysName = sysName;
         this.softwareId = softwareId;
-    }
-
-    public boolean isDebugOn() {
-        return isDebugOn;
-    }
-
-    public void setDebugOn(boolean debugOn) {
-        isDebugOn = debugOn;
     }
 
     public String getSysName() {

@@ -31,6 +31,10 @@ public class CommonUtil {
         return json;
     }
 
+    public static void main(String[] args) {
+        System.out.println(getRuntimeInfo("CommonUtil", "main"));
+    }
+
     public static String getClientRealIp(HttpServletRequest request) {
         String realIp = null;
         realIp = request.getHeader("X-Forwarded-For");
@@ -78,6 +82,6 @@ public class CommonUtil {
      * @return
      */
     private static boolean checkRealIp(String realIp) {
-        return realIp == null || realIp.length() == 0 || realIp.equalsIgnoreCase("unKnown") ? false : true;
+        return !(realIp == null || realIp.length() == 0 || realIp.equalsIgnoreCase("unKnown"));
     }
 }

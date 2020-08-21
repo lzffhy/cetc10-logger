@@ -21,6 +21,7 @@ public class LogOpEntity {
     private String sysName;//系统名称
     private String softwareId;//软件标识
     private String localIp;//本机ip
+    private String clientIp;//客户端ip
     private String logLevel;
     private String userId;
     private String userName;//用户名
@@ -39,6 +40,6 @@ public class LogOpEntity {
                         return  "【" + log.getString(e.getName()) + "】";
                     }
                 })
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(""));
     }
 }
