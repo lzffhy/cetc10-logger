@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF">
+<properties>
+    <!-- 配置系统日志和操作日志的根路径，可根据需要修改成自定义路径 -->
+    <property name="SYS_HOME">log/sys/</property>
+    <property name="OP_HOME">log/op/</property>
+    <!-- 日志输出格式 -->
+    <property name="CONSOLE_PATTERN">【%d{yyyy.MM.dd HH:mm:ss.SSS}】【%-5level】【%t】【%class{36}】【%L】【%M】 - %msg%xEx%n</property>
+</properties>
+<!-- 自定义日志级别（不可修改） -->
+<CustomLevels>
+    <CustomLevel name="OP" intLevel="50" />
+</CustomLevels>
+<Appenders>
+	<!-- 在控制台输出 -->
+    <Console name="Console" target="SYSTEM_OUT">
+		<!-- 日志输出格式 -->
+        <PatternLayout pattern="${CONSOLE_PATTERN}" />
+		<!-- 控制台只输出info级别以上的日志 -->
+        <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+    </Console>
+
+	<!-- 配置debug级别日志输出到文件（这里也可以根据需要修改成自己需要的路径和文件路径及文件名） -->
+    <RollingRandomAccessFile name="debugFile"
+                             fileName="${SYS_HOME}/debug.log"
+                             filePattern="${SYS_HOME}/debug-%d{yyyy-MM-dd}-%i.log">
+		<!-- 配置只接收debug级别日志（onMatch），其他日志忽略（onMisMatch） -->
+        <Filters>
+            <ThresholdFilter level="info"  onMatch="DENY"   onMismatch="NEUTRAL"/>
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMisMatch="DENY"/>
+        </Filters>
+        <Policies>
+            <!-- 归档每天的文件 -->
+            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            <!-- 限制单个文件大小 -->
+            <SizeBasedTriggeringPolicy size="100 MB" />
+        </Policies>
+        <!-- 保存15天的文件，超出15天的文件自动删除，可根据需要自定义 -->
+        <DefaultRolloverStrategy compressionLevel="0" max="15">
+            <Delete basePath="${SYS_HOME}" maxDepth="2">
+                <IfFileName glob="*.log" />
+                <IfLastModified age="15d" />
+            </Delete>
+        </DefaultRolloverStrategy>
+    </RollingRandomAccessFile>
+ 
+	<!-- 配置info级别的日志输出到文件，可根据需要确定是否需要该配置，内部配置与debug相同 -->
+    <RollingRandomAccessFile name="infoFile"
+                             fileName="${SYS_HOME}/info.log"
+                             filePattern="${SYS_HOME}/info-%d{yyyy-MM-dd}-%i.log">
+        <Filters>
+            <ThresholdFilter level="warn"  onMatch="DENY"   onMismatch="NEUTRAL"/>
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMisMatch="DENY"/>
+        </Filters>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            <SizeBasedTriggeringPolicy size="100 MB" />
+        </Policies>
+        <DefaultRolloverStrategy compressionLevel="0" max="15">
+            <Delete basePath="${SYS_HOME}" maxDepth="2">
+                <IfFileName glob="*.log" />
+                <IfLastModified age="15d" />
+            </Delete>
+        </DefaultRolloverStrategy>
+    </RollingRandomAccessFile>
+
+	<!-- 配置warn级别的日志输出到文件，可根据需要确定是否需要该配置，内部配置与debug相同 -->
+    <RollingRandomAccessFile name="warnFile"
+                             fileName="${SYS_HOME}/warn.log"
+                             filePattern="${SYS_HOME}/warn-%d{yyyy-MM-dd}-%i.log">
+        <Filters>
+            <ThresholdFilter level="error"  onMatch="DENY"   onMismatch="NEUTRAL"/>
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMisMatch="DENY"/>
+        </Filters>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            <SizeBasedTriggeringPolicy size="100 MB" />
+        </Policies>
+        <DefaultRolloverStrategy compressionLevel="0" max="15">
+            <Delete basePath="${SYS_HOME}" maxDepth="2">
+                <IfFileName glob="*.log" />
+                <IfLastModified age="15d" />
+            </Delete>
+        </DefaultRolloverStrategy>
+    </RollingRandomAccessFile>
+
+	<!-- 配置error级别的日志输出到文件，可根据需要确定是否需要该配置，内部配置与debug相同 -->
+    <RollingRandomAccessFile name="errorFile"
+                             fileName="${SYS_HOME}/error.log"
+                             filePattern="${SYS_HOME}/error-%d{yyyy-MM-dd}-%i.log">
+        <Filters>
+            <ThresholdFilter level="fatal"  onMatch="DENY"   onMismatch="NEUTRAL"/>
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMisMatch="DENY"/>
+        </Filters>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            <SizeBasedTriggeringPolicy size="100 MB" />
+        </Policies>
+        <DefaultRolloverStrategy compressionLevel="0" max="15">
+            <Delete basePath="${SYS_HOME}" maxDepth="2">
+                <IfFileName glob="*.log" />
+                <IfLastModified age="15d" />
+            </Delete>
+        </DefaultRolloverStrategy>
+    </RollingRandomAccessFile>
+
+	<!-- 配置op级别的日志输出到文件，可根据需要确定是否需要该配置，内部配置与debug相同 -->
+    <RollingRandomAccessFile name="opFile"
+                             fileName="${OP_HOME}/op.log"
+                             filePattern="${OP_HOME}/op-%d{yyyy-MM-dd}-%i.log">
+        <Filters>
+            <ThresholdFilter level="op" onMatch="ACCEPT" onMisMatch="DENY"/>
+        </Filters>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            <SizeBasedTriggeringPolicy size="100 MB" />
+        </Policies>
+        <DefaultRolloverStrategy compressionLevel="0" max="15">
+            <Delete basePath="${OP_HOME}" maxDepth="2">
+                <IfFileName glob="*.log" />
+                <IfLastModified age="15d" />
+            </Delete>
+        </DefaultRolloverStrategy>
+
+    </RollingRandomAccessFile>
+
+    <!-- 配置fatal级别的日志输出到文件，可根据需要确定是否需要该配置，内部配置与debug相同 -->
+    <RollingRandomAccessFile name="fatalFile"
+                             fileName="${SYS_HOME}/fatal.log"
+                             filePattern="${SYS_HOME}/fatal-%d{yyyy-MM-dd}-%i.log">
+        <Filters>
+            <ThresholdFilter level="op"  onMatch="DENY"   onMismatch="NEUTRAL"/>
+            <ThresholdFilter level="fatal" onMatch="ACCEPT" onMisMatch="DENY"/>
+        </Filters>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            <SizeBasedTriggeringPolicy size="100 MB" />
+        </Policies>
+        <DefaultRolloverStrategy compressionLevel="0" max="15">
+            <Delete basePath="${SYS_HOME}" maxDepth="2">
+                <IfFileName glob="*.log" />
+                <IfLastModified age="15d" />
+            </Delete>
+        </DefaultRolloverStrategy>
+    </RollingRandomAccessFile>
+</Appenders>
+
+<Loggers>
+	<!-- 配置使Appenders中配置的RollingRandomAccessFile生效 -->
+    <Root level="INFO" includeLocation="true">
+        <AppenderRef ref="Console" />
+        <!-- debug日志默认不输出到文件 -->
+        <!--<AppenderRef ref="debugFile" />-->
+        <AppenderRef ref="warnFile" />
+        <AppenderRef ref="errorFile" />
+        <AppenderRef ref="infoFile" />
+        <AppenderRef ref="fatalFile" />
+        <AppenderRef ref="opFile" />
+    </Root>
+</Loggers>
+</Configuration>
