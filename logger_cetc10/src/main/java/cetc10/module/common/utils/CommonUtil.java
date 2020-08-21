@@ -31,10 +31,6 @@ public class CommonUtil {
         return json;
     }
 
-    public static void main(String[] args) {
-        System.out.println(getRuntimeInfo("CommonUtil", "main"));
-    }
-
     public static String getClientRealIp(HttpServletRequest request) {
         String realIp = null;
         realIp = request.getHeader("X-Forwarded-For");
